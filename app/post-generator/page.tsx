@@ -80,15 +80,8 @@ export default function PostGenerator() {
   const [posts, setPosts] = useState<PostInterface>({ tweet: { title: "", content: "" }, linkedIn: { title: "", content: "" } })
   const [isAgentActive, setIsAgentActive] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const { setState, running } = useCoAgent({
-    name: "post_generation_agent",
-    initialState: {
-      tool_logs: []
-    }
-  })
-
   const { appendMessage, setMessages } = useCopilotChat()
-
+  const [toolLogs, setToolLogs] = useState<any[]>([])
 
   // Handle clicking outside dropdown to close it
   useEffect(() => {
@@ -107,14 +100,6 @@ export default function PostGenerator() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isDropdownOpen])
-
-
-  useCoAgentStateRender({
-    name: "post_generation_agent",
-    render: (state) => {
-      return <ToolLogs logs={state?.state?.tool_logs || []} />
-    }
-  })
 
   useCopilotAction({
     name: "generate_post",
@@ -173,10 +158,7 @@ export default function PostGenerator() {
       console.log(args, "args")
       setShowColumns(true)
       setPosts({ tweet: args.tweet, linkedIn: args.linkedIn })
-      setState((prevState) => ({
-        ...prevState,
-        tool_logs: []
-      }))
+      setToolLogs([])
     }
   })
 
@@ -386,7 +368,7 @@ export default function PostGenerator() {
                   <Button
                     key={index}
                     variant="outline"
-                    disabled={running}
+                    disabled={isAgentActive}
 
                     className="h-auto p-6 flex flex-col items-center gap-3 bg-white/50 backdrop-blur-sm border-gray-200/50 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all duration-300 group"
                     onClick={() => appendMessage(new TextMessage({

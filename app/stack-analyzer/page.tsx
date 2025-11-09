@@ -79,13 +79,10 @@ export default function StackAnalyzer() {
     const [isAgentActive, setIsAgentActive] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const { updateLayout } = useLayout()
-    const { setState, running, state } = useCoAgent({
-        name: "stack_analysis_agent",
-        initialState: {
-            tool_logs: [],
-            show_cards : false,
-            analysis : ""
-        }
+    const [state, setState] = useState<any>({
+        tool_logs: [],
+        show_cards: false,
+        analysis: ""
     })
     const { appendMessage, setMessages } = useCopilotChat()
 
@@ -112,14 +109,6 @@ export default function StackAnalyzer() {
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [isDropdownOpen])
-
-
-    useCoAgentStateRender({
-        name: "stack_analysis_agent",
-        render: (state) => {
-            return <ToolLogs logs={state?.state?.tool_logs || []} />
-        }
-    })
 
     useCopilotChatSuggestions({
         available: "enabled",
