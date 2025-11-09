@@ -11,4 +11,9 @@ fi
 # Activate the virtual environment
 source .venv/bin/activate
 
+if ! command -v poetry >/dev/null 2>&1; then
+  echo "Poetry is not installed. Skipping agent dependencies setup."
+  exit 0
+fi
+
 (poetry install --no-root)
