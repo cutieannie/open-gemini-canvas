@@ -22,7 +22,7 @@ import {
     ChevronDown,
     Check,
 } from "lucide-react"
-import { useCoAgent, useCoAgentStateRender, useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
+import { useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
 import { ToolLogs } from "@/components/ui/tool-logs"
 import { XPost, XPostPreview, XPostCompact } from "@/components/ui/x-post"
 import { LinkedInPost, LinkedInPostPreview, LinkedInPostCompact } from "@/components/ui/linkedin-post"
@@ -32,7 +32,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { useParams, useRouter, usePathname, useSearchParams } from "next/navigation"
 import { StackAnalysisCards } from "@/components/ui/stack-analysis-cards"
-import { useLayout } from "../contexts/LayoutContext"
 
 
 const agents = [
@@ -78,7 +77,6 @@ export default function StackAnalyzer() {
     const [selectedAgent, setSelectedAgent] = useState(agents[1])
     const [isAgentActive, setIsAgentActive] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const { updateLayout } = useLayout()
     const [state, setState] = useState<any>({
         tool_logs: [],
         show_cards: false,
@@ -174,7 +172,6 @@ export default function StackAnalyzer() {
                                             key={agent.id}
                                             onClick={() => {
                                                 if (selectedAgent.id != agent.id) {
-                                                    updateLayout({ agent: agent.id })
                                                     setMessages([])
                                                     setState({
                                                         tool_logs: [],

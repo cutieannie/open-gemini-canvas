@@ -22,7 +22,7 @@ import {
   ChevronDown,
   Check,
 } from "lucide-react"
-import { useCoAgent, useCoAgentStateRender, useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
+import { useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
 import { ToolLogs } from "@/components/ui/tool-logs"
 import { XPost, XPostPreview, XPostCompact } from "@/components/ui/x-post"
 import { LinkedInPost, LinkedInPostPreview, LinkedInPostCompact } from "@/components/ui/linkedin-post"
@@ -31,7 +31,6 @@ import { initialPrompt, suggestionPrompt } from "../prompts/prompts"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-import { useLayout } from "../contexts/LayoutContext"
 
 
 const agents = [
@@ -74,7 +73,6 @@ interface PostInterface {
 
 export default function PostGenerator() {
   const router = useRouter()
-  const { updateLayout } = useLayout()
   const [selectedAgent, setSelectedAgent] = useState(agents[0])
   const [showColumns, setShowColumns] = useState(false)
   const [posts, setPosts] = useState<PostInterface>({ tweet: { title: "", content: "" }, linkedIn: { title: "", content: "" } })
@@ -226,7 +224,6 @@ export default function PostGenerator() {
                       key={agent.id}
                       onClick={() => {
                         if (selectedAgent.id != agent.id) {
-                            updateLayout({ agent: agent.id })
                             setMessages([])
                             router.push(`/stack-analyzer`)
                         }
