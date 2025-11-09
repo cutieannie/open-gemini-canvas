@@ -1,0 +1,37 @@
+[project]
+# Your Supabase project ref (will be filled after you create the project)
+project_id = ""
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[edge_functions]
+enabled = true
+# Port for serving Edge Functions locally
+port = 54324
+# Inspector port for debugging
+inspector_port = 5772
+# Time in seconds to wait for function to start up
+verify_jwt = false
+
+[auth]
+enabled = true
+port = 54325
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true

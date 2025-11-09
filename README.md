@@ -20,7 +20,7 @@ It includes two agents, exposed through a **Next.js frontend** and a **FastAPI b
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js  
-- **Backend**: FastAPI  
+- **Backend**: FastAPI (Python) hoặc Supabase Edge Functions (TypeScript/Deno)
 - **Agents**:  Google Gemini + LangGraph
 - **UI Layer**: CopilotKit
 
@@ -38,7 +38,10 @@ This demo illustrates how CopilotKit can be paired with LangGraph and Gemini to 
 ## Project Structure
 
 - `/` — Next.js 15 app (UI) in the Project Root 
-- `agent/` — FastAPI backend agent (Python)
+- `agent/` — FastAPI backend agent (Python) - tùy chọn
+- `supabase/functions/copilotkit/` — Supabase Edge Functions backend (TypeScript/Deno) - tùy chọn
+
+**Lưu ý**: Bạn chỉ cần chọn một trong hai backend: FastAPI hoặc Supabase Edge Functions.
 
 ---
 
@@ -80,6 +83,60 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 ## Notes
 - Ensure the backend agent is running before using the frontend.
 - Update environment variables as needed for your deployment.
+
+---
+
+## 🌐 Deployment Options
+
+### Option 1: Vercel (Frontend) + Supabase (Backend) - **Được khuyến nghị**
+
+**Ưu điểm**: 
+- Serverless, tự động scale
+- Miễn phí cho 500K requests/tháng
+- Không cần quản lý server
+- Cold start nhanh (~100-300ms)
+
+**Các bước**:
+1. **Deploy Frontend lên Vercel**:
+   ```bash
+   vercel --prod
+   ```
+
+2. **Deploy Backend lên Supabase**:
+   - Xem hướng dẫn chi tiết tại: [`supabase/SUPABASE_DEPLOYMENT.md`](./supabase/SUPABASE_DEPLOYMENT.md)
+   - Tóm tắt:
+     ```bash
+     # Login Supabase
+     supabase login
+     
+     # Link project
+     supabase link --project-ref <your-project-ref>
+     
+     # Set secrets
+     supabase secrets set GOOGLE_API_KEY=<your-key>
+     
+     # Deploy
+     supabase functions deploy copilotkit
+     ```
+
+3. **Cấu hình Vercel Environment Variables**:
+   - `GOOGLE_API_KEY`: Gemini API key
+   - `NEXT_PUBLIC_LANGGRAPH_URL`: `https://<project-ref>.supabase.co/functions/v1/copilotkit`
+
+### Option 2: Vercel (Frontend) + FastAPI (Backend riêng)
+
+**Ưu điểm**:
+- Full control Python environment
+- Có thể dùng dependencies phức tạp
+
+**Nhược điểm**:
+- Cần quản lý server riêng (Railway, Render, Fly.io)
+- Chi phí $5-20/tháng
+
+**Các bước**:
+1. Deploy Frontend lên Vercel (như Option 1)
+2. Deploy FastAPI lên Railway/Render/Fly.io
+3. Set `NEXT_PUBLIC_LANGGRAPH_URL` trên Vercel trỏ tới URL backend
 
 ---
 
