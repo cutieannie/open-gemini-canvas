@@ -86,6 +86,28 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 - Tất cả chạy trên Next.js, không cần backend riêng
 - Deploy chỉ cần Vercel
 
+## ⚠️ Limitations (so với Python version)
+
+Kiến trúc hiện tại được đơn giản hóa để dễ deploy. So với Python FastAPI version:
+
+**Post Generator:**
+- ⚠️ **Không có real-time web search**: Dựa trên Gemini training data thay vì Google Search API
+- ⚠️ **Không có progress indicators**: UI không hiển thị "Analyzing query...", "Performing web search..."
+- ✅ **Vẫn generate được posts**: Quality tốt nhưng có thể kém current hơn
+
+**Stack Analyzer:**
+- ⚠️ **Giới hạn GitHub analysis**: Không fetch trực tiếp repo data (README, package.json, etc.)
+- ⚠️ **Dựa vào inference**: Analyze dựa trên patterns và Gemini knowledge
+- ⚠️ **Không có progress indicators**: UI không hiển thị fetching steps
+
+**Trade-offs được chấp nhận để:**
+- ✅ Đơn giản deployment (chỉ Vercel)
+- ✅ Không cần manage backend riêng
+- ✅ Chi phí thấp hơn
+- ✅ Dễ maintain
+
+Xem chi tiết: [`ARCHITECTURE_COMPARISON.md`](./ARCHITECTURE_COMPARISON.md)
+
 ---
 
 ## 🌐 Deployment
