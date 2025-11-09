@@ -2,30 +2,24 @@ import {
   CopilotRuntime,
   copilotRuntimeNextJSAppRouterEndpoint,
   GoogleGenerativeAIAdapter,
-  LangGraphAgent
+  LangGraphAgent,
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
  
-// You can use any service adapter here for multi-agent support.
-const serviceAdapter = new GoogleGenerativeAIAdapter();
+// Use Google Gemini directly with agent definitions
+const serviceAdapter = new GoogleGenerativeAIAdapter({
+  model: "gemini-2.0-flash-exp",
+});
  
-const remoteEndpointUrl =
-  process.env.NEXT_PUBLIC_LANGGRAPH_URL || "http://localhost:8000/copilotkit";
-
-const supabaseJwt =
-  process.env.SUPABASE_EDGE_FUNCTION_KEY ||
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_ANON_KEY;
-
 const runtime = new CopilotRuntime({
-  remoteEndpoints: [
+  agents: [
     {
-      url: remoteEndpointUrl,
-      headers: supabaseJwt
-        ? {
-            Authorization: `Bearer ${supabaseJwt}`,
-          }
-        : undefined,
+      name: "post_generation_agent",
+      description: "An agent that can help with the generation of LinkedIn posts and X posts.",
+    },
+    {
+      name: "stack_analysis_agent",
+      description: "Analyze a GitHub repository URL to infer purpose and tech stack (frontend, backend, DB, infra).",
     },
   ],
 });

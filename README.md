@@ -20,9 +20,9 @@ It includes two agents, exposed through a **Next.js frontend** and a **FastAPI b
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js  
-- **Backend**: FastAPI (Python) hoặc Supabase Edge Functions (TypeScript/Deno)
-- **Agents**:  Google Gemini + LangGraph
+- **AI Model**: Google Gemini (gemini-2.0-flash-exp)
 - **UI Layer**: CopilotKit
+- **Deployment**: Vercel
 
 
 ## 📌 About
@@ -37,11 +37,11 @@ This demo illustrates how CopilotKit can be paired with LangGraph and Gemini to 
 
 ## Project Structure
 
-- `/` — Next.js 15 app (UI) in the Project Root 
-- `agent/` — FastAPI backend agent (Python) - tùy chọn
-- `supabase/functions/copilotkit/` — Supabase Edge Functions backend (TypeScript/Deno) - tùy chọn
-
-**Lưu ý**: Bạn chỉ cần chọn một trong hai backend: FastAPI hoặc Supabase Edge Functions.
+- `/` — Next.js 15 app (UI + API Routes)
+- `/app/api/copilotkit/` — API route kết nối với Gemini
+- `components/` — React components với CopilotKit integration
+- `agent/` — Legacy FastAPI backend (không dùng nữa)
+- `supabase/` — Legacy Supabase Edge Functions (tham khảo)
 
 ---
 
@@ -53,25 +53,26 @@ Clone this repo `git clone <project URL>`
 
 ### 2. Environment Configuration
 
-Create a `.env` file in each relevant directory as needed. 
+Tạo file `.env.local` trong thư mục root:
 
-#### Backend (`agent/.env`):
 ```env
-GOOGLE_API_KEY=<<your-gemini-key-here>>
+GOOGLE_API_KEY=your_gemini_api_key_here
 ```
 
-#### Frontend (`/.env`):
-```env
-GOOGLE_API_KEY=<<your-gemini-key-here>>
-```
+Lấy API key miễn phí tại: https://aistudio.google.com/apikey
 
 ---
 
 ### 3. Running the project
 
 ```bash
-pnpm install
-pnpm dev
+# Install dependencies
+npm install --legacy-peer-deps
+# hoặc nếu có pnpm: pnpm install
+
+# Start dev server
+npm run dev:ui
+# hoặc: pnpm dev:ui
 ```
 
 ---
@@ -81,62 +82,57 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 ---
 
 ## Notes
-- Ensure the backend agent is running before using the frontend.
-- Update environment variables as needed for your deployment.
+- Chỉ cần một API key Gemini duy nhất
+- Tất cả chạy trên Next.js, không cần backend riêng
+- Deploy chỉ cần Vercel
 
 ---
 
-## 🌐 Deployment Options
+## 🌐 Deployment
 
-### Option 1: Vercel (Frontend) + Supabase (Backend) - **Được khuyến nghị**
+### Deploy lên Vercel (Đơn giản nhất)
 
 **Ưu điểm**: 
 - Serverless, tự động scale
-- Miễn phí cho 500K requests/tháng
-- Không cần quản lý server
-- Cold start nhanh (~100-300ms)
+- Miễn phí cho hobby projects
+- Không cần backend riêng
+- Setup trong 2 phút
 
 **Các bước**:
-1. **Deploy Frontend lên Vercel**:
+
+1. **Link với Vercel** (nếu chưa):
+   ```bash
+   vercel link
+   ```
+
+2. **Cấu hình Environment Variables**:
+   ```bash
+   vercel env add GOOGLE_API_KEY production
+   # Nhập: <your-gemini-api-key>
+   
+   vercel env add GOOGLE_API_KEY preview
+   # Nhập: <your-gemini-api-key>
+   ```
+
+3. **Deploy**:
    ```bash
    vercel --prod
    ```
 
-2. **Deploy Backend lên Supabase**:
-   - Xem hướng dẫn chi tiết tại: [`supabase/SUPABASE_DEPLOYMENT.md`](./supabase/SUPABASE_DEPLOYMENT.md)
-   - Tóm tắt:
-     ```bash
-     # Login Supabase
-     supabase login
-     
-     # Link project
-     supabase link --project-ref <your-project-ref>
-     
-     # Set secrets
-     supabase secrets set GOOGLE_API_KEY=<your-key>
-     
-     # Deploy
-     supabase functions deploy copilotkit
-     ```
+**Hoặc deploy qua Vercel Dashboard**:
+1. Import repo từ GitHub
+2. Thêm env var `GOOGLE_API_KEY` trong Settings → Environment Variables
+3. Click Deploy
 
-3. **Cấu hình Vercel Environment Variables**:
-   - `GOOGLE_API_KEY`: Gemini API key
-   - `NEXT_PUBLIC_LANGGRAPH_URL`: `https://<project-ref>.supabase.co/functions/v1/copilotkit`
+---
 
-### Option 2: Vercel (Frontend) + FastAPI (Backend riêng)
+### Advanced: Custom Backend (Tùy chọn)
 
-**Ưu điểm**:
-- Full control Python environment
-- Có thể dùng dependencies phức tạp
+Nếu muốn tách backend riêng, xem:
+- [`agent/`](./agent/) - FastAPI implementation
+- [`supabase/`](./supabase/) - Supabase Edge Functions implementation
 
-**Nhược điểm**:
-- Cần quản lý server riêng (Railway, Render, Fly.io)
-- Chi phí $5-20/tháng
-
-**Các bước**:
-1. Deploy Frontend lên Vercel (như Option 1)
-2. Deploy FastAPI lên Railway/Render/Fly.io
-3. Set `NEXT_PUBLIC_LANGGRAPH_URL` trên Vercel trỏ tới URL backend
+**Lưu ý**: Các backend này là legacy code, không cần thiết cho deployment đơn giản.
 
 ---
 

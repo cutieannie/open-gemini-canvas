@@ -17,6 +17,27 @@ serve(async (req: Request) => {
   }
 
   try {
+    const url = new URL(req.url);
+    
+    // Handle /info endpoint for CopilotKit metadata
+    if (url.pathname.endsWith('/info')) {
+      return new Response(JSON.stringify({
+        agents: [
+          {
+            name: "post_generation_agent",
+            description: "An agent that can help with the generation of LinkedIn posts and X posts."
+          },
+          {
+            name: "stack_analysis_agent",
+            description: "Analyze a GitHub repository URL to infer purpose and tech stack (frontend, backend, DB, infra)."
+          }
+        ]
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json();
     const { messages, agent } = body;
 
