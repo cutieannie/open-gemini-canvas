@@ -21,7 +21,7 @@
     "@langchain/langgraph": "^0.4.9",
     "@langchain/google-genai": "0.2.18",
     "@copilotkit/sdk-js": "^1.10.6",
-    "@google/generative-ai": "^0.6.1",
+    "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
